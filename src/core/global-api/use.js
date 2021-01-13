@@ -2,6 +2,11 @@
 
 import { toArray } from '../util/index'
 
+/*zzc
+* 2021年1月5日08:03:05
+* 定义use
+*
+* */
 export function initUse (Vue: GlobalAPI) {
   Vue.use = function (plugin: Function | Object) {
     const installedPlugins = (this._installedPlugins || (this._installedPlugins = []))

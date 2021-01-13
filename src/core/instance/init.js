@@ -12,6 +12,9 @@ import { extend, mergeOptions, formatComponentName } from '../util/index'
 
 let uid = 0
 
+/*zzc
+* 2021年1月6日07:21:03
+* */
 export function initMixin (Vue: Class<Component>) {
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
@@ -28,6 +31,10 @@ export function initMixin (Vue: Class<Component>) {
 
     // a flag to avoid this being observed
     vm._isVue = true
+    /* zzc
+    * 2021年1月6日07:21:03
+    * 合并选项
+    * * */
     // merge options
     if (options && options._isComponent) {
       // optimize internal component instantiation
@@ -49,13 +56,20 @@ export function initMixin (Vue: Class<Component>) {
     }
     // expose real self
     vm._self = vm
-    initLifecycle(vm)
-    initEvents(vm)
-    initRender(vm)
-    callHook(vm, 'beforeCreate')
+    /*zzc
+    * 2021年1月6日07:21:03
+    * _init
+    * */
+    initLifecycle(vm)           /*zzc 2021年1月6日07:21:03 $parent $root $children */
+    initEvents(vm)              /*zzc 2021年1月6日07:21:03  addEventlisteners 处理父组件的 事件监听*/
+    initRender(vm)              /*zzc 2021年1月6日07:21:03 声明 $slot $createElement */
+    callHook(vm, 'beforeCreate')        /*zzc 2021年1月6日07:21:03 调用beforeCreate钩子*/
     initInjections(vm) // resolve injections before data/props
+      /*zzc 2021年1月6日07:21:03 注入数据*/
     initState(vm)
+      /*zzc 2021年1月6日07:21:03 重要：数据初始化，响应式*/
     initProvide(vm) // resolve provide after data/props
+      /*zzc 2021年1月6日07:21:03 提供数据*/
     callHook(vm, 'created')
 
     /* istanbul ignore if */
@@ -66,6 +80,12 @@ export function initMixin (Vue: Class<Component>) {
     }
 
     if (vm.$options.el) {
+        /*zzc
+        * 2021年1月6日20:59:21
+        * 初始化 el => $mount
+        * entry-runtime-with-compiler
+        * lifeCycle
+        * */
       vm.$mount(vm.$options.el)
     }
   }
@@ -93,7 +113,7 @@ export function initInternalComponent (vm: Component, options: InternalComponent
 export function resolveConstructorOptions (Ctor: Class<Component>) {
   let options = Ctor.options
   if (Ctor.super) {
-    const superOptions = resolveConstructorOptions(Ctor.super)
+    const superOptions =  resolveConstructorOptions(Ctor.super)
     const cachedSuperOptions = Ctor.superOptions
     if (superOptions !== cachedSuperOptions) {
       // super option changed,

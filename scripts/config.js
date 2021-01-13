@@ -27,6 +27,7 @@ const weexFactoryPlugin = {
 
 const aliases = require('./alias')
 const resolve = p => {
+    // 3.
   const base = p.split('/')[0]
   if (aliases[base]) {
     return path.resolve(aliases[base], p.slice(base.length + 1))
@@ -36,6 +37,7 @@ const resolve = p => {
 }
 
 const builds = {
+  //  创建的对象
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs-dev': {
     entry: resolve('web/entry-runtime.js'),
@@ -121,6 +123,7 @@ const builds = {
   },
   // Runtime+compiler development build (Browser)
   'web-full-dev': {
+    // 2
     entry: resolve('web/entry-runtime-with-compiler.js'),
     dest: resolve('dist/vue.js'),
     format: 'umd',

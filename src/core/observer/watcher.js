@@ -99,6 +99,11 @@ export default class Watcher {
    * Evaluate the getter, and re-collect dependencies.
    */
   get () {
+      /*zzc
+      * 2021年1月7日06:47:11
+      *
+      *
+      * */
     pushTarget(this)
     let value
     const vm = this.vm

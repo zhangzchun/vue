@@ -34,6 +34,12 @@ export function toggleObserving (value: boolean) {
  * object's property keys into getter/setters that
  * collect dependencies and dispatch updates.
  */
+
+/*zzc
+* 2021年1月7日22:38:32
+* 每一个响应式的对象，都会有一个 ob
+*
+* */
 export class Observer {
   value: any;
   dep: Dep;
@@ -41,17 +47,35 @@ export class Observer {
 
   constructor (value: any) {
     this.value = value
+      /*zzc
+      * 2021年1月8日07:16:29
+      * 为什么在 observer 中设置 dep
+      * object 又新增或删除属性
+      * array 有变更方法，
+      * */
     this.dep = new Dep()
     this.vmCount = 0
+      /*zzc
+      * 2021年1月7日22:39:49
+      * 设置属性 __ob__ 引用 observer 实例
+      * */
     def(value, '__ob__', this)
+      /*2021年1月7日22:40:28
+      * 判断类型
+      * */
     if (Array.isArray(value)) {
       if (hasProto) {
+          /*zzc
+          * 替换数组对象原型
+          * */
         protoAugment(value, arrayMethods)
       } else {
         copyAugment(value, arrayMethods, arrayKeys)
       }
+      /*如果数组 元素是对象，还需要做响应式处理 */
       this.observeArray(value)
     } else {
+        /*对象-直接 walk */
       this.walk(value)
     }
   }
@@ -111,6 +135,13 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
   if (!isObject(value) || value instanceof VNode) {
     return
   }
+  /*zzc
+  * 2021年1月7日22:26:10
+  * observer
+  * 已经创建直接返回，否则创建新的实例
+  *
+  * __ob__ ==> ob
+  * */
   let ob: Observer | void
   if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
     ob = value.__ob__
@@ -139,6 +170,10 @@ export function defineReactive (
   customSetter?: ?Function,
   shallow?: boolean
 ) {
+    /*zzc
+    * 2021年1月8日07:18:48
+    * dep 和 key: string, 一一对应
+    * */
   const dep = new Dep()
 
   const property = Object.getOwnPropertyDescriptor(obj, key)
@@ -147,20 +182,34 @@ export function defineReactive (
   }
 
   // cater for pre-defined getter/setters
+    /*zzc
+    * 2021年1月8日07:18:57
+    * 手动设置获取
+    * data 设置 直接设置函数*/
   const getter = property && property.get
   const setter = property && property.set
   if ((!getter || setter) && arguments.length === 2) {
     val = obj[key]
   }
 
+  /*zzc
+  * 2021年1月8日07:19:03
+  * 属性拦截 */
   let childOb = !shallow && observe(val)
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
     get: function reactiveGetter () {
+        // 获取key
       const value = getter ? getter.call(obj) : val
+        // 如果存在依赖
       if (Dep.target) {
+          // 收集依赖
         dep.depend()
+          /*zzc
+          * 如果存在子 ob， 子ob 收集依赖。
+          * 页面有用到
+          * */
         if (childOb) {
           childOb.dep.depend()
           if (Array.isArray(value)) {
@@ -187,7 +236,10 @@ export function defineReactive (
       } else {
         val = newVal
       }
+      /* 如果新值是对象，*/
       childOb = !shallow && observe(newVal)
+        /*zzc
+        * 通知更新*/
       dep.notify()
     }
   })

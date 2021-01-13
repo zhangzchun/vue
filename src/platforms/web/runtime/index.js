@@ -31,14 +31,31 @@ extend(Vue.options.directives, platformDirectives)
 extend(Vue.options.components, platformComponents)
 
 // install platform patch function
+/* zzc
+* 2021年1月5日07:53:37
+* 指定 patch 方法；传入虚拟dom 变成真实dom, diff 算法
+* */
+
 Vue.prototype.__patch__ = inBrowser ? patch : noop
 
 // public mount method
+//zzc
+/*zzc
+* 2021年1月5日07:53:37
+* 实现 $mount
+* */
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
 ): Component {
   el = el && inBrowser ? query(el) : undefined
+    //zzc
+    // 执行初始化， 替换el
+    /* zzc
+    * 2021年1月6日21:45:00
+    * entry-runtime-with-com
+    * lifeCycle.js
+    * */
   return mountComponent(this, el, hydrating)
 }
 

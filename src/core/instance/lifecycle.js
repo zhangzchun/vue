@@ -56,6 +56,11 @@ export function initLifecycle (vm: Component) {
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
+    /*zzc
+    * 2021年1月7日21:55:12
+    *
+    *
+    * */
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
@@ -66,6 +71,10 @@ export function lifecycleMixin (Vue: Class<Component>) {
     // based on the rendering backend used.
     if (!prevVnode) {
       // initial render
+        /*zzc
+        * 2021年1月7日06:54:26
+        * diff 算法 发生的地方
+        * */
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
       // updates
@@ -143,6 +152,9 @@ export function mountComponent (
   el: ?Element,
   hydrating?: boolean
 ): Component {
+    /*zzc
+    * 2021年1月7日06:37:53
+    * 虚拟dom 转化为真实dom */
   vm.$el = el
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode
@@ -164,6 +176,11 @@ export function mountComponent (
       }
     }
   }
+  /*zzc
+  * 2021年1月6日21:51:59
+  *
+  *
+  * */
   callHook(vm, 'beforeMount')
 
   let updateComponent
@@ -186,8 +203,18 @@ export function mountComponent (
       measure(`vue ${name} patch`, startTag, endTag)
     }
   } else {
+      /*zzc
+      * 2021年1月6日21:52:57
+      *
+      * _render
+      * _update 虚拟dom 真实dom
+      *
+      * from ==> lifecycle.js  new Watcher
+      * next ==> render.js  _render
+      * */
     updateComponent = () => {
       vm._update(vm._render(), hydrating)
+        /*zzc _update ==> diff */
     }
   }
 

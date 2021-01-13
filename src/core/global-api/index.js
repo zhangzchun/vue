@@ -18,6 +18,11 @@ import {
   defineReactive
 } from '../util/index'
 
+/*zzc
+* 2021年1月5日08:00:52
+*
+* 定义全局 api
+* */
 export function initGlobalAPI (Vue: GlobalAPI) {
   // config
   const configDef = {}

@@ -14,7 +14,9 @@ const idToTemplate = cached(id => {
   return el && el.innerHTML
 })
 
+// 保存原型上的 $mount
 const mount = Vue.prototype.$mount
+// 覆盖默认的 $mount
 Vue.prototype.$mount = function (
   el?: string | Element,
   hydrating?: boolean
@@ -22,6 +24,10 @@ Vue.prototype.$mount = function (
   el = el && query(el)
 
   /* istanbul ignore if */
+    /*zzc
+    * 2021年1月5日07:54:16
+    * 可忽略的代码， 调试阶段，警告信息。。。
+    * */
   if (el === document.body || el === document.documentElement) {
     process.env.NODE_ENV !== 'production' && warn(
       `Do not mount Vue to <html> or <body> - mount to normal elements instead.`
@@ -29,11 +35,21 @@ Vue.prototype.$mount = function (
     return this
   }
 
+  /*zzc
+  *
+  * 解析 options 选项
+  * */
   const options = this.$options
   // resolve template/el and convert to render function
   if (!options.render) {
+      /*zzc
+      * 1. render
+      * */
     let template = options.template
     if (template) {
+        /*zzc
+        * 2. template
+        * */
       if (typeof template === 'string') {
         if (template.charAt(0) === '#') {
           template = idToTemplate(template)
@@ -54,14 +70,25 @@ Vue.prototype.$mount = function (
         return this
       }
     } else if (el) {
+        /*zzc
+        * 3. el，el 赋值给 template
+        * */
       template = getOuterHTML(el)
     }
+      /*zzc
+      * 2021年1月5日07:54:31
+      * 编译
+      * */
     if (template) {
       /* istanbul ignore if */
       if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
         mark('compile')
       }
 
+      /* zzc
+      * 2021年1月5日07:54:44
+      * 编译得到渲染函数
+      * */
       const { render, staticRenderFns } = compileToFunctions(template, {
         outputSourceRange: process.env.NODE_ENV !== 'production',
         shouldDecodeNewlines,
@@ -69,6 +96,10 @@ Vue.prototype.$mount = function (
         delimiters: options.delimiters,
         comments: options.comments
       }, this)
+        /*zzc
+        * 2021年1月5日07:55:01
+        * 赋值 render
+        * */
       options.render = render
       options.staticRenderFns = staticRenderFns
 
@@ -79,6 +110,11 @@ Vue.prototype.$mount = function (
       }
     }
   }
+  /*zzc
+  * 2021年1月5日07:54:53
+  * 执行挂载 mount
+  * next ==> runtime/index.j
+  * */
   return mount.call(this, el, hydrating)
 }
 

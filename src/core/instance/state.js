@@ -48,6 +48,11 @@ export function proxy (target: Object, sourceKey: string, key: string) {
 export function initState (vm: Component) {
   vm._watchers = []
   const opts = vm.$options
+    /*zzc
+    * 2021年1月7日22:07:30
+    * 属性初始化
+    *
+    * */
   if (opts.props) initProps(vm, opts.props)
   if (opts.methods) initMethods(vm, opts.methods)
   if (opts.data) {
@@ -123,6 +128,10 @@ function initData (vm: Component) {
     )
   }
   // proxy data on instance
+    /*zzc
+    * 2021年1月7日22:09:16
+    * 代理
+    * */
   const keys = Object.keys(data)
   const props = vm.$options.props
   const methods = vm.$options.methods
@@ -144,10 +153,17 @@ function initData (vm: Component) {
         vm
       )
     } else if (!isReserved(key)) {
+        /*zzc
+        * 代理 核心在这里
+        * */
       proxy(vm, `_data`, key)
     }
   }
   // observe data
+    /*zzc
+    * 2021年1月7日22:10:37
+    * 响应式操作的地方
+    * */
   observe(data, true /* asRootData */)
 }
 
