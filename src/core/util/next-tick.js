@@ -42,6 +42,10 @@ let timerFunc
 if (typeof Promise !== 'undefined' && isNative(Promise)) {
   const p = Promise.resolve()
   timerFunc = () => {
+      /*zzc
+      * 2021年1月14日06:53:08
+      * 启动微任务
+      * */
     p.then(flushCallbacks)
     // In problematic UIWebViews, Promise.then doesn't completely break, but
     // it can get stuck in a weird state where callbacks are pushed into the
@@ -99,6 +103,9 @@ export function nextTick (cb?: Function, ctx?: Object) {
   })
   if (!pending) {
     pending = true
+      /*zzc
+      * 2021年1月14日06:51:34
+      * 异步函数 */
     timerFunc()
   }
   // $flow-disable-line

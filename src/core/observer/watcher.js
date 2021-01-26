@@ -183,7 +183,16 @@ export default class Watcher {
    */
   run () {
     if (this.active) {
+        /*zzc
+        * 2021年1月14日07:16:42
+        * get() 把 watcher 创建的更新函数调用下
+        * */
       const value = this.get()
+
+        /*zzc
+        * 2021年1月14日07:20:23
+        * 下面执行用户定义的 watcher
+        * */
       if (
         value !== this.value ||
         // Deep watchers and watchers on Object/Arrays should fire even

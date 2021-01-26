@@ -163,9 +163,18 @@ function callActivatedHooks (queue) {
  */
 export function queueWatcher (watcher: Watcher) {
   const id = watcher.id
+    /*zzc
+    * 2021年1月14日06:37:14
+    * 去重
+    *
+    * */
   if (has[id] == null) {
     has[id] = true
     if (!flushing) {
+        /*zzc
+        * 2021年1月14日06:49:23
+        *
+        * */
       queue.push(watcher)
     } else {
       // if already flushing, splice the watcher based on its id
@@ -184,6 +193,9 @@ export function queueWatcher (watcher: Watcher) {
         flushSchedulerQueue()
         return
       }
+      /*zzc
+      * 2021年1月14日06:47:47
+      * 异步刷新队列 */
       nextTick(flushSchedulerQueue)
     }
   }

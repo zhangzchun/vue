@@ -205,7 +205,7 @@ export function mountComponent (
   } else {
       /*zzc
       * 2021年1月6日21:52:57
-      *
+      * 用户 $mount 定义 updateComponent
       * _render
       * _update 虚拟dom 真实dom
       *
