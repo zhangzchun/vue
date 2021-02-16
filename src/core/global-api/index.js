@@ -4,8 +4,13 @@ import config from '../config'
 import { initUse } from './use'
 import { initMixin } from './mixin'
 import { initExtend } from './extend'
+
 import { initAssetRegisters } from './assets'
 import { set, del } from '../observer/index'
+/*zzc
+* 2021年2月11日17:39:21
+* 动态生成 component
+* */
 import { ASSET_TYPES } from 'shared/constants'
 import builtInComponents from '../components/index'
 import { observe } from 'core/observer/index'
@@ -58,6 +63,11 @@ export function initGlobalAPI (Vue: GlobalAPI) {
 
   Vue.options = Object.create(null)
   ASSET_TYPES.forEach(type => {
+      /*zzc
+      * 2021年2月11日18:15:10
+      * 三个对象的创建，如出一辙，循环实现
+      * Vue.options[components] = {}
+      * */
     Vue.options[type + 's'] = Object.create(null)
   })
 

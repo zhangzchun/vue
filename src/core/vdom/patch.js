@@ -208,9 +208,14 @@ export function createPatchFunction (backend) {
   }
 
   function createComponent (vnode, insertedVnodeQueue, parentElm, refElm) {
+      /*zzc
+      * 2021-2-12 10:58:48
+      * 获取管理钩子函数,把前面createComponent 执行结果vnode转换为真实dom
+      * */
     let i = vnode.data
     if (isDef(i)) {
       const isReactivated = isDef(vnode.componentInstance) && i.keepAlive
+        /*存在 init钩子，执行之并创建实例并挂载*/
       if (isDef(i = i.hook) && isDef(i = i.init)) {
         i(vnode, false /* hydrating */)
       }
@@ -218,7 +223,11 @@ export function createPatchFunction (backend) {
       // it should've created a child instance and mounted it. the child
       // component also has set the placeholder vnode's elm.
       // in that case we can just return the element and be done.
+        /*zzc
+        * 如果组件实例存在，*/
       if (isDef(vnode.componentInstance)) {
+          /*zzc
+          * 属性的初始化 */
         initComponent(vnode, insertedVnodeQueue)
         insert(parentElm, vnode.elm, refElm)
         if (isTrue(isReactivated)) {
@@ -401,11 +410,23 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /*zzc
+  * 2021年2月1日07:39:33
+  * 重排算法
+  * */
   function updateChildren (parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly) {
+      /*zzc
+      * 2021年2月2日06:56:31
+      * 四个指针
+      * */
     let oldStartIdx = 0
     let newStartIdx = 0
     let oldEndIdx = oldCh.length - 1
     let oldStartVnode = oldCh[0]
+      /*zzc
+      * 2021年2月2日06:57:05
+      * 四个节点
+      * */
     let oldEndVnode = oldCh[oldEndIdx]
     let newEndIdx = newCh.length - 1
     let newStartVnode = newCh[0]
@@ -421,11 +442,22 @@ export function createPatchFunction (backend) {
       checkDuplicateKeys(newCh)
     }
 
+    /*zzc
+    * 2021年2月2日07:01:58
+    * 循环条件
+    * */
     while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+        /*zzc
+        * 2021年2月2日07:02:42
+        * 头尾指针调整
+        * */
       if (isUndef(oldStartVnode)) {
         oldStartVnode = oldCh[++oldStartIdx] // Vnode has been moved left
       } else if (isUndef(oldEndVnode)) {
         oldEndVnode = oldCh[--oldEndIdx]
+          /*2021年2月2日07:03:20
+          * 头尾比较四种情况
+          * */
       } else if (sameVnode(oldStartVnode, newStartVnode)) {
         patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
         oldStartVnode = oldCh[++oldStartIdx]
@@ -445,6 +477,9 @@ export function createPatchFunction (backend) {
         oldEndVnode = oldCh[--oldEndIdx]
         newStartVnode = newCh[++newStartIdx]
       } else {
+          /*2021年2月2日07:13:38
+          * 4中猜想之后，不得不开始循环查找。。
+          * */
         if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)
         idxInOld = isDef(newStartVnode.key)
           ? oldKeyToIdx[newStartVnode.key]
@@ -465,6 +500,11 @@ export function createPatchFunction (backend) {
         newStartVnode = newCh[++newStartIdx]
       }
     }
+
+    /*zzc
+    * 2021年2月2日07:30:43
+    * 整理数组
+    * */
     if (oldStartIdx > oldEndIdx) {
       refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm
       addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue)
@@ -498,6 +538,9 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /*zzc
+  * 2021年2月4日07:46:37
+  * */
   function patchVnode (
     oldVnode,
     vnode,
@@ -526,6 +569,10 @@ export function createPatchFunction (backend) {
       return
     }
 
+    /*zzc
+    * 2021年2月10日15:40:13
+    * isStatic
+    * */
     // reuse element for static trees.
     // note we only do this if the vnode is cloned -
     // if the new node is not cloned it means the render functions have been
@@ -539,30 +586,49 @@ export function createPatchFunction (backend) {
       return
     }
 
+    /*zzc
+    * 2021年2月1日07:17:28
+    * 执行一些 组件的钩子
+    * */
     let i
     const data = vnode.data
     if (isDef(data) && isDef(i = data.hook) && isDef(i = i.prepatch)) {
       i(oldVnode, vnode)
     }
 
+    /*zzc
+    * 2021年2月1日07:18:49
+    * 新旧节点是否存在 children -孩子
+    * 属性更新*/
     const oldCh = oldVnode.children
     const ch = vnode.children
     if (isDef(data) && isPatchable(vnode)) {
       for (i = 0; i < cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)
       if (isDef(i = data.hook) && isDef(i = i.update)) i(oldVnode, vnode)
     }
+
+    /*zzc
+    * 2021年2月1日07:20:41
+    * 判断是否是元素-- text
+    * */
     if (isUndef(vnode.text)) {
+        /*双方都有孩子 比较孩子，reorder-重排-*/
       if (isDef(oldCh) && isDef(ch)) {
         if (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)
       } else if (isDef(ch)) {
+          /*新节点-有孩子*/
         if (process.env.NODE_ENV !== 'production') {
           checkDuplicateKeys(ch)
         }
+        /*清空老节点文本*/
         if (isDef(oldVnode.text)) nodeOps.setTextContent(elm, '')
+          /*创建孩子并追加*/
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue)
       } else if (isDef(oldCh)) {
+          /*老节点有孩子，删除即可-*/
         removeVnodes(oldCh, 0, oldCh.length - 1)
       } else if (isDef(oldVnode.text)) {
+          /* 老节点存在文本，清空即可...*/
         nodeOps.setTextContent(elm, '')
       }
     } else if (oldVnode.text !== vnode.text) {
@@ -697,7 +763,16 @@ export function createPatchFunction (backend) {
     }
   }
 
+  /*zzc
+  * 2021年1月28日07:44:49
+  * 为什么返回 patch ？？
+  * 跨平台
+  * */
   return function patch (oldVnode, vnode, hydrating, removeOnly) {
+      /*zzc
+      * 2021年2月1日07:12:29
+      * 如果新的 vdom 不存在，则删除。
+      * */
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
       return
@@ -706,6 +781,12 @@ export function createPatchFunction (backend) {
     let isInitialPatch = false
     const insertedVnodeQueue = []
 
+      /*zzc
+      * 2021年1月28日07:55:44
+      * 如果旧的vdom树不存在 -- 新增
+      *
+      *
+      * */
     if (isUndef(oldVnode)) {
       // empty mount (likely as component), create new root element
       isInitialPatch = true
@@ -713,9 +794,18 @@ export function createPatchFunction (backend) {
     } else {
       const isRealElement = isDef(oldVnode.nodeType)
       if (!isRealElement && sameVnode(oldVnode, vnode)) {
+          /*zzc
+          * 2021年1月28日20:59:51
+          * 存在新旧vdom，则diff 操作；
+          *
+          * */
         // patch existing root node
         patchVnode(oldVnode, vnode, insertedVnodeQueue, null, null, removeOnly)
       } else {
+          /*zzc
+          * 2021年1月28日08:01:40
+          * 如果传入真实dom, 则做初始化操作。。
+          * */
         if (isRealElement) {
           // mounting to a real element
           // check if this is server-rendered content and if we can perform
@@ -747,7 +837,12 @@ export function createPatchFunction (backend) {
         const oldElm = oldVnode.elm
         const parentElm = nodeOps.parentNode(oldElm)
 
-        // create new node
+        /*zzc
+        * 2021年1月27日07:49:58
+        * create new node 追加而不是替换
+        *
+        * */
+          // create new node
         createElm(
           vnode,
           insertedVnodeQueue,

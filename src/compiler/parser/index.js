@@ -201,6 +201,11 @@ export function parse (
     }
   }
 
+  /*zzc
+  * 2021年2月10日07:34:05
+  *
+  *
+  * */
   parseHTML(template, {
     warn,
     expectHTML: options.expectHTML,
@@ -221,6 +226,10 @@ export function parse (
         attrs = guardIESVGBug(attrs)
       }
 
+      /*zzc
+      * 2021年2月10日07:37:26
+      *
+      **/
       let element: ASTElement = createASTElement(tag, attrs, currentParent)
       if (ns) {
         element.ns = ns
@@ -259,6 +268,8 @@ export function parse (
         )
       }
 
+      /*zzc
+      * 2021年2月10日08:08:54*/
       // apply pre-transforms
       for (let i = 0; i < preTransforms.length; i++) {
         element = preTransforms[i](element, options) || element
@@ -273,6 +284,10 @@ export function parse (
       if (platformIsPreTag(element.tag)) {
         inPre = true
       }
+      /*zzc
+      * 2021年2月10日08:08:38
+      *
+      * */
       if (inVPre) {
         processRawAttrs(element)
       } else if (!element.processed) {
@@ -527,6 +542,10 @@ export function parseFor (exp: string): ?ForParseResult {
   return res
 }
 
+/*zzc
+* 2021年2月10日17:22:14
+*
+* */
 function processIf (el) {
   const exp = getAndRemoveAttr(el, 'v-if')
   if (exp) {

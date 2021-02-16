@@ -6,7 +6,10 @@ let isStaticKey
 let isPlatformReservedTag
 
 const genStaticKeysCached = cached(genStaticKeys)
-
+/*zzc
+* 2021年2月10日16:37:55
+* optimize 优化
+* */
 /**
  * Goal of the optimizer: walk the generated template AST tree
  * and detect sub-trees that are purely static, i.e. parts of
@@ -25,6 +28,11 @@ export function optimize (root: ?ASTElement, options: CompilerOptions) {
   // first pass: mark all non-static nodes.
   markStatic(root)
   // second pass: mark static roots.
+    /*zzc
+    * 2021年2月10日16:40:47
+    * 它的所有孩子都是静态节点
+    *
+    * */
   markStaticRoots(root, false)
 }
 

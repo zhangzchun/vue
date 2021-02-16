@@ -32,6 +32,10 @@ export function initRender (vm: Component) {
   // so that we get proper render context inside it.
   // args order: tag, data, children, normalizationType, alwaysNormalize
   // internal version is used by render functions compiled from templates
+    /*zzc
+    * 2021年2月11日19:04:08
+    * 编译器生成渲染函数使用的，内部使用
+    * */
   vm._c = (a, b, c, d) => createElement(vm, a, b, c, d, false)
   // normalization is always applied for the public version, used in
   // user-written render functions.
@@ -39,6 +43,7 @@ export function initRender (vm: Component) {
     *
     * render(h)
     * */
+    /*用户render 使用 */
   vm.$createElement = (a, b, c, d) => createElement(vm, a, b, c, d, true)
 
   // $attrs & $listeners are exposed for easier HOC creation.
@@ -96,6 +101,9 @@ export function renderMixin (Vue: Class<Component>) {
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
       currentRenderingInstance = vm
+        /*zzc
+        * 2021年2月11日18:58:50
+        * render(h) vm.$createElement 就是 h */
       vnode = render.call(vm._renderProxy, vm.$createElement)
     } catch (e) {
       handleError(e, vm, `render`)

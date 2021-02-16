@@ -33,6 +33,10 @@ import {
 } from 'weex/runtime/recycle-list/render-component-template'
 
 // inline hooks to be invoked on component VNodes during patch
+/*zzc
+* 2021年2月11日21:47:59
+* 默认组件管理钩子
+* */
 const componentVNodeHooks = {
   init (vnode: VNodeWithData, hydrating: boolean): ?boolean {
     if (
@@ -44,10 +48,17 @@ const componentVNodeHooks = {
       const mountedNode: any = vnode // work around flow
       componentVNodeHooks.prepatch(mountedNode, mountedNode)
     } else {
+        /*zzc
+        * 2021年2月11日21:49:12
+        * 创建组件实例
+        * */
       const child = vnode.componentInstance = createComponentInstanceForVnode(
         vnode,
         activeInstance
       )
+        /*zzc
+        * 2021年2月11日21:50:11
+        * 创建完成并挂载*/
       child.$mount(hydrating ? vnode.elm : undefined, hydrating)
     }
   },
@@ -98,6 +109,9 @@ const componentVNodeHooks = {
 
 const hooksToMerge = Object.keys(componentVNodeHooks)
 
+/*zzc
+* 2021年2月11日21:32:36
+* 创建自定义组件 */
 export function createComponent (
   Ctor: Class<Component> | Function | Object | void,
   data: ?VNodeData,
@@ -144,6 +158,9 @@ export function createComponent (
     }
   }
 
+  /*zzc
+  * 2021年2月11日21:34:00
+  * 处理传递的数据 */
   data = data || {}
 
   // resolve constructor options in case global mixins are applied after
@@ -151,6 +168,7 @@ export function createComponent (
   resolveConstructorOptions(Ctor)
 
   // transform component v-model data into props & events
+    /*zzc v-modal */
   if (isDef(data.model)) {
     transformModel(Ctor.options, data)
   }
@@ -183,10 +201,16 @@ export function createComponent (
   }
 
   // install component management hooks onto the placeholder node
+    /*zzc
+    * 2021年2月11日21:40:04
+    * 安装自定义组件管理的钩子，比如初始化钩子 init 等
+    * */
   installComponentHooks(data)
 
   // return a placeholder vnode
   const name = Ctor.options.name || tag
+    /*zzc
+    * 定义组件名称---*/
   const vnode = new VNode(
     `vue-component-${Ctor.cid}${name ? `-${name}` : ''}`,
     data, undefined, undefined, undefined, context,
@@ -225,6 +249,10 @@ export function createComponentInstanceForVnode (
   return new vnode.componentOptions.Ctor(options)
 }
 
+/*zzc
+* 2021年2月11日21:42:42
+* 有合并操作，因为用户可以能传递钩子；会整合。
+* */
 function installComponentHooks (data: VNodeData) {
   const hooks = data.hook || (data.hook = {})
   for (let i = 0; i < hooksToMerge.length; i++) {

@@ -13,6 +13,9 @@ declare interface GlobalAPI {
   compile: (template: string) => { render: Function, staticRenderFns: Array<Function> };
 
   directive: (id: string, def?: Function | Object) => Function | Object | void;
+  /*zzc
+  * 2021年2月11日17:37:51
+  * 注册 component*/
   component: (id: string, def?: Class<Component> | Object) => Class<Component>;
   filter: (id: string, def?: Function) => Function | void;
 

@@ -45,6 +45,10 @@ export function generate (
   options: CompilerOptions
 ): CodegenResult {
   const state = new CodegenState(options)
+    /*zzc
+    * 2021年2月10日16:43:22
+    *
+    * */
   const code = ast ? genElement(ast, state) : '_c("div")'
   return {
     render: `with(this){return ${code}}`,
@@ -64,6 +68,10 @@ export function genElement (el: ASTElement, state: CodegenState): string {
   } else if (el.for && !el.forProcessed) {
     return genFor(el, state)
   } else if (el.if && !el.ifProcessed) {
+      /*zzc
+      * 2021年2月10日17:32:44
+      *
+      * */
     return genIf(el, state)
   } else if (el.tag === 'template' && !el.slotTarget && !state.pre) {
     return genChildren(el, state) || 'void 0'
@@ -152,6 +160,10 @@ export function genIf (
   return genIfConditions(el.ifConditions.slice(), state, altGen, altEmpty)
 }
 
+/*zzc
+* 2021年2月10日17:36:09
+*
+* */
 function genIfConditions (
   conditions: ASTIfConditions,
   state: CodegenState,
